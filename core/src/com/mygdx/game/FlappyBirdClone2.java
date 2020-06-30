@@ -29,6 +29,9 @@ public class FlappyBirdClone2 extends Game {
 	Texture main;
 	//ShapeRenderer shapeRenderer;
 
+	Texture instruction;
+	Texture insBackground;
+
 	Texture gameOver;
 
 	Texture[] birds;
@@ -48,6 +51,7 @@ public class FlappyBirdClone2 extends Game {
 
 	int gameState = 0;
 	float gravity = 2;
+	int initialCount = 0;
 
 	Texture topTube;
 	Texture bottomTube;
@@ -65,6 +69,8 @@ public class FlappyBirdClone2 extends Game {
 	Preferences preferences;
 	int highScore;
 
+	int instructionCount = 0;
+
 	Music music;
 	Music music2;
 	int musicCount = 0;
@@ -77,11 +83,11 @@ public class FlappyBirdClone2 extends Game {
 		gameOver = new Texture("gameover.png");
 		main = new Texture("main.png");
 
+		instruction = new Texture("ins.png");
+		insBackground = new Texture("instructionbackground.png");
+
 		//shapeRenderer = new ShapeRenderer();
 		birdCircle = new Circle();
-		font = new BitmapFont();
-		font.setColor(Color.WHITE);
-		font.getData().setScale(10);
 
 		fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("orbitron.ttf"));
 		parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -156,10 +162,26 @@ public class FlappyBirdClone2 extends Game {
 
 		batch.begin();
 
-		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		if(gameState!=3) {
+			batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		}
+
 		if (gameState == 1) {
 
-			if (tubeX[scoringTube] < Gdx.graphics.getWidth() / 2) {
+			if(initialCount == 0)
+			{
+				velocity = 0;
+				birdY = Gdx.graphics.getHeight()/2;
+				if(Gdx.input.justTouched())
+				{
+					initialCount++;
+					velocity = -20;
+					birdY -= velocity*1.5;
+				}
+			}
+			else {
+
+				if (tubeX[scoringTube] < Gdx.graphics.getWidth() / 2) {
 
 				score++;
 
@@ -175,28 +197,29 @@ public class FlappyBirdClone2 extends Game {
 
 			}
 
-			if (Gdx.input.justTouched()) {
-				velocity = -30;
-				birdY -= velocity*1.5;
-			}
-
-			for (int i = 0; i < numberOfTubes; i++) {
-
-				if (tubeX[i] < - topTube.getWidth()) {
-
-					tubeX[i] += numberOfTubes * distanceBetweenTubes;
-					tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 1100);
-
-				} else {
-
-					tubeX[i] = tubeX[i] - tubeVelocity;
+				if (Gdx.input.justTouched()) {
+					velocity = -20;
+					birdY -= velocity;
 				}
 
-				batch.draw(topTube, tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
-				batch.draw(bottomTube, tubeX[i], Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i]);
+				for (int i = 0; i < numberOfTubes; i++) {
 
-				topTubeRectangles[i] = new Rectangle(tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i], topTube.getWidth(), topTube.getHeight());
-				bottomTubeRectangles[i] = new Rectangle(tubeX[i], Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i], bottomTube.getWidth(), bottomTube.getHeight());
+					if (tubeX[i] < -topTube.getWidth()) {
+
+						tubeX[i] += numberOfTubes * distanceBetweenTubes;
+						tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 1100);
+
+					} else {
+
+						tubeX[i] = tubeX[i] - tubeVelocity;
+					}
+
+					batch.draw(topTube, tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
+					batch.draw(bottomTube, tubeX[i], Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i]);
+
+					topTubeRectangles[i] = new Rectangle(tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i], topTube.getWidth(), topTube.getHeight());
+					bottomTubeRectangles[i] = new Rectangle(tubeX[i], Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i], bottomTube.getWidth(), bottomTube.getHeight());
+				}
 			}
 
 			if (birdY > 0 && birdY < Gdx.graphics.getHeight() - birds[0].getHeight()) {
@@ -247,6 +270,7 @@ public class FlappyBirdClone2 extends Game {
 			if(musicCount == 0) {
 				music.play();
 				music2.stop();
+				musicCount = 1;
 			}
 			batch.draw(main, (Gdx.graphics.getWidth() / 2) - ((main.getWidth() * 2) / 2), (Gdx.graphics.getHeight() / 2) - ((main.getHeight() * 2) / 2), main.getWidth() * 2, main.getHeight() * 2);
 
@@ -257,16 +281,35 @@ public class FlappyBirdClone2 extends Game {
 
 			if (Gdx.input.justTouched()) {
 
-				gameState = 1;
+				if(instructionCount == 0)
+				{
+					gameState = 3;
+					instructionCount = 1;
+				}
+				else
+				{
+					gameState = 1;
+				}
 
 			}
 
-		} else if (gameState == 2) {
+		} else if(gameState == 3) {
 
-			if(musicCount == 0) {
+			batch.draw(insBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			batch.draw(instruction, Gdx.graphics.getWidth()/2-(instruction.getWidth()*1.75f), Gdx.graphics.getHeight()/2 - (instruction.getHeight()*1.75f), instruction.getWidth()*3.5f, instruction.getHeight()*3.5f);
+
+			if(Gdx.input.justTouched())
+			{
+				gameState = 1;
+			}
+
+		}
+		else if (gameState == 2) {
+
+			if(musicCount == 1) {
 				music.stop();
 				music2.play();
-				musicCount++;
+				musicCount = 0;
 			}
 
 			for(int i = 0; i < numberOfTubes; i++)
@@ -296,7 +339,9 @@ public class FlappyBirdClone2 extends Game {
 			if (Gdx.input.justTouched()) {
 
 				gameState = 0;
+				initialCount = 0;
 				startGame();
+
 			}
 
 		}
