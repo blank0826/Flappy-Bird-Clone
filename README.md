@@ -1,6 +1,6 @@
 # <ins>**Flappy-Bird-Clone**</ins>
 # Description
-This is a game known as Flappy Bird where the bird jumps on tap and and you have to protect the bird from colliding with the pipes. A highscore is maintained so that you can see how high you have ever got.
+This is a game known as Flappy Bird where the bird jumps on tap and you have to protect the bird from colliding with the pipes. A high score is maintained so that you can see how high you have ever got.
 
 This has been created using **XML**, **Java**, **LibGDX**.
 
@@ -12,6 +12,22 @@ When you collide with the pipes or move out of the screen the game is over.
 
 ## B. Objective
 To look at the backend of the game, refer to [Flappy Bird Clone](https://github.com/blank0826/Flappy-Bird-Clone/blob/master/core/src/com/mygdx/game/FlappyBirdClone2.java).
+
+We will describe a little about each function used in this file.<br/><br/>
+
+**<ins>1. public void create ()</ins>**<br/>
+This function creates the UI for the game holding high scores, setting music, backgrounds, birds display.
+
+
+**<ins>2. public void startGame()</ins>**<br/>
+This function sets the default height of the bird and also creates pipes to be shown throughout the game.
+
+**<ins>3. public void render ()</ins>**<br/>
+This function is called continuously as long as the game is being played.<br/><br/>
+
+
+This keeps in track the state of the game, increase and decrease the bird height on tap, whether it has collided with the screen or pipes, creates an infinite loop of those pipes created, and also provides the feature of increasing high score simultaneously.
+
 
 # Local Setup
 ## <ins>Pre-requisites</ins>
