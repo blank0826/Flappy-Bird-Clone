@@ -31,8 +31,9 @@ This keeps in track the state of the game, increase and decrease the bird height
 
 # Local Setup
 ## <ins>Pre-requisites</ins>
-Android Studio with support of Java.
-You can download Android Studio [here](https://developer.android.com/studio).
+Android Studio with support of Java.<br/>
+You can download Android Studio [here](https://developer.android.com/studio).<br/>
+To use the features of game in backend, Go to [LibGDX](https://libgdx.com/dev/tools/) then download Setup Tool.
 
 ## <ins>Execution</ins>
 1. Pull the code and open it on Android Studio.<br />
